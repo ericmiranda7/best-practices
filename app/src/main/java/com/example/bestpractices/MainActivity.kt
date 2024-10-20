@@ -23,7 +23,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -32,7 +31,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.coroutineScope
 import com.example.bestpractices.ui.theme.BestPracticesTheme
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
 
 
@@ -49,8 +50,13 @@ class MainActivity : ComponentActivity() {
                     val modifier = Modifier.padding(innerPadding)
                     val countComplete = remember { mutableStateOf(false) }
 
-                    if (countComplete.value) {
-                        Log.d("tasking", "count complete")
+                    LaunchedEffect(countComplete.value) {
+                        if (countComplete.value) {
+                            Log.d("tasking", "count complete")
+                            lifecycle.coroutineScope.launch {
+                                superExpensiveMethod()
+                            }
+                        }
                     }
 
                     Column (modifier = modifier) {
@@ -63,9 +69,11 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-fun superExpensiveMethod() {
-    Thread.sleep(8000)
-    Log.d("tasking", "computation complete")
+suspend fun superExpensiveMethod() {
+    withContext(Dispatchers.IO) {
+        Thread.sleep(8000)
+        Log.d("tasking", "computation complete")
+    }
 }
 
 @Composable
