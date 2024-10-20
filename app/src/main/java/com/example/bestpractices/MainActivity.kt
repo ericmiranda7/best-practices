@@ -30,7 +30,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
+import androidx.lifecycle.coroutineScope
 import com.example.bestpractices.ui.theme.BestPracticesTheme
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 
@@ -59,6 +61,11 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
+
+fun superExpensiveMethod() {
+    Thread.sleep(8000)
+    Log.d("tasking", "computation complete")
 }
 
 @Composable
